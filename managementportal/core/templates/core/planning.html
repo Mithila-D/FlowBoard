@@ -1,0 +1,41 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h2>Planning Dashboard</h2>
+
+<!-- Add New Plan -->
+<div class="plan-form">
+  <h3>Create New Plan</h3>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" name="add_plan">Add Plan</button>
+  </form>
+</div>
+
+<!-- Timeline / Progress -->
+<div class="plan-gantt">
+  <h3>Timeline</h3>
+  <div class="timeline">
+    {% for plan in plans %}
+      <div class="task" title="{{ plan.description }}" style="width: {{ plan.progress }}%">
+        <strong>{{ plan.title }}</strong> ({{ plan.progress }}%)
+        <p>{{ plan.start_date }} - {{ plan.end_date }}</p>
+      </div>
+    {% empty %}
+      <p>No plans yet.</p>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Delete Plan -->
+<div class="delete-task">
+  <h3>Delete a Plan</h3>
+  <form method="post">
+    {% csrf_token %}
+    <input type="text" name="plan_name" placeholder="Enter plan title to delete" required>
+    <button type="submit" name="delete_plan">Delete Plan</button>
+  </form>
+</div>
+
+{% endblock %}

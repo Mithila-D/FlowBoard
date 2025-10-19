@@ -1,0 +1,53 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h2>Controlling Dashboard</h2>
+
+<!-- Popup Alert for Overdue Tasks -->
+{% if overdue_tasks %}
+<script>
+    let overdueTasks = [
+        {% for task in overdue_tasks %}
+            "{{ task.title }} - Deadline: {{ task.deadline|date:'M. d, Y' }}{% if task.assigned_to %} - Assigned to: {{ task.assigned_to.name }}{% endif %}",
+        {% endfor %}
+    ];
+    alert("⚠ Overdue Tasks:\n" + overdueTasks.join("\n"));
+</script>
+{% endif %}
+
+<!-- Task List -->
+<div class="tasks-grid">
+    {% for task in tasks %}
+    <div class="task-card"
+         title="{{ task.description }}"
+         style="
+            border-left:5px solid
+                {% if task.progress == 100 %}gray
+                {% elif task.deadline < today and task.progress < 100 %}red
+                {% else %}#e53935
+                {% endif %};
+            background-color: {% if task.progress == 100 %}#f0f0f0{% else %}white{% endif %};
+            opacity: {% if task.progress == 100 %}0.6{% else %}1{% endif %};
+            margin-bottom: 10px;
+            padding: 10px;
+         ">
+        <h3>{{ task.title }}</h3>
+        <p>Deadline: {{ task.deadline|date:"M. d, Y" }}</p>
+        <p>Assigned to: {% if task.assigned_to %}{{ task.assigned_to.name }}{% else %}No one{% endif %}</p>
+        <p>Progress: {{ task.progress }}%</p>
+
+        <!-- Update Progress Form -->
+        {% if task.progress < 100 %}
+        <form method="post" style="display:inline-block;">
+            {% csrf_token %}
+            <input type="hidden" name="task_id" value="{{ task.id }}">
+            <input type="number" name="progress" value="{{ task.progress }}" min="0" max="100">
+            <button type="submit" name="update_task">Update</button>
+        </form>
+        {% endif %}
+    </div>
+    {% empty %}
+        <p>No tasks yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

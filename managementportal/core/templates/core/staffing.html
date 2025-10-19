@@ -1,0 +1,61 @@
+{% extends 'core/base.html' %} {% block content %}
+<h2>Staffing Management</h2>
+
+<div class="staff-form">
+  <h3>Add Employee</h3>
+  <form method="post">
+    {% csrf_token %} {{ emp_form.as_p }}
+    <button type="submit" name="add_employee">Add Employee</button>
+  </form>
+</div>
+
+<div class="role-form">
+  <h3>Assign Role</h3>
+  <form method="post">
+    {% csrf_token %} {{ role_form.as_p }}
+    <button type="submit" name="assign_role">Assign Role</button>
+  </form>
+</div>
+
+<div class="delete-employee">
+  <h3>Delete Employee</h3>
+  <form method="post">
+    {% csrf_token %}
+    <input
+      type="text"
+      name="employee_name"
+      placeholder="Enter employee name"
+      required
+    />
+    <button type="submit" name="delete_employee">Delete</button>
+  </form>
+</div>
+
+<div class="employee-list">
+  <h3>Employees & Skills</h3>
+  {% for emp in employees %}
+  <div class="employee-card">
+    <strong>{{ emp.name }}</strong>
+    <p>Skills: {{ emp.skills }}</p>
+  </div>
+  {% empty %}
+  <p>No employees yet.</p>
+  {% endfor %}
+</div>
+
+<div class="assignment-list">
+  <h3>Role Assignments</h3>
+  {% for assign in assignments %}
+  <div class="assignment-card">
+    <p>
+      {{ assign.employee.name }} → {{ assign.role_name }} (Project: {{
+      assign.project_name }}, and Deadline: {{ assign.deadline|date:"M. d, Y"
+      }})
+    </p>
+  </div>
+  {% empty %}
+  <p>No assignments yet.</p>
+  {% endfor %}
+</div>
+
+{% endblock %}

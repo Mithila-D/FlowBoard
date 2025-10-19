@@ -1,0 +1,88 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h2>Organizing Teams</h2>
+
+<div class="team-form">
+  <h3>Add New Team</h3>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" name="add_team">Add Team</button>
+  </form>
+</div>
+
+<div class="delete-team">
+  <h3>Delete a Team</h3>
+  <form method="post">
+    {% csrf_token %}
+    <input type="text" name="team_name" placeholder="Enter department name to delete" required>
+    <button type="submit" name="delete_team">Delete Team</button>
+  </form>
+</div>
+
+<div class="org-chart">
+  <h3>Team Structure</h3>
+  {% for team in teams %}
+  <div class="team-card">
+    <strong>{{ team.department_name }}</strong>
+    <p>Leader: {{ team.team_leader }}</p>
+    <p>Members: {{ team.members }}</p>
+    <p>Materials: {{ team.materials }}</p>
+    <p>Machines: {{ team.machines }}</p>
+  </div>
+  {% empty %}
+  <p>No teams yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+{% comment %} {% extends 'core/base.html' %} {% block content %}
+<h2>Organizing Teams</h2>
+
+<div class="team-form">
+  <h3>Add New Team</h3>
+  <form method="post">
+    {% csrf_token %} {{ form.as_p }}
+    <button type="submit" name="add_team">Add Team</button>
+  </form>
+</div>
+
+<div class="delete-team">
+  <h3>Delete a Team</h3>
+  <form method="post">
+    {% csrf_token %}
+    <input
+      type="text"
+      name="team_name"
+      placeholder="Enter department name to delete"
+      required
+    />
+    <button type="submit" name="delete_team">Delete Team</button>
+  </form>
+</div>
+
+<div class="org-chart">
+  <h3>Team Structure</h3>
+  {% for team in teams %}
+  <div class="team-card">
+    <strong>{{ team.department_name }}</strong>
+    <p>Leader: {{ team.team_leader }}</p>
+    <p>Members: {{ team.members }}</p>
+  </div>
+  {% empty %}
+  <p>No teams yet.</p>
+  {% endfor %}
+</div>
+{% endblock %} {% endcomment %}
+

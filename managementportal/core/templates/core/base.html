@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Management Portal</title>
+    <link rel="stylesheet" href="{% static 'core/style.css' %}" />
+  </head>
+  <body>
+    <header>
+      <h1>Innovative Management Portal</h1>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/planning/">Planning</a>
+        <a href="/organizing/" class="feature-btn">Organizing</a>
+        <a href="/staffing/" class="feature-btn">Staffing</a>
+        <a href="/directing/" class="feature-btn">Directing</a>
+        <a href="/controlling/" class="feature-btn">Controlling</a>
+      </nav>
+    </header>
+    <main>{% block content %}{% endblock %}</main>
+    <footer>
+      <p>© 2025 Innovative Management Portal</p>
+    </footer>
+  </body>
+</html>

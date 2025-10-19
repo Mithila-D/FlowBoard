@@ -1,0 +1,103 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h2>Directing Dashboard</h2>
+
+<!-- Add New Task -->
+<div class="add-task">
+  <h3>Add New Task</h3>
+  <form method="post">
+    {% csrf_token %}
+    
+    <label for="task_select">Select Plan</label>
+    <select name="plan_id" id="task_select" required>
+      <option value="">--Select Plan--</option>
+      {% for plan in plans %}
+        <option value="{{ plan.id }}">{{ plan.title }}</option>
+      {% endfor %}
+    </select>
+
+    <label for="assigned_to">Assign to Employee</label>
+    <select name="employee_id" id="assigned_to">
+      <option value="">--Select Employee--</option>
+      {% for emp in employees %}
+        <option value="{{ emp.id }}">{{ emp.name }}</option>
+      {% endfor %}
+    </select>
+
+    <button type="submit" name="add_task">Add Task</button>
+  </form>
+</div>
+
+<!-- Task List -->
+<div class="tasks-grid">
+  {% for task in tasks %}
+    {% if task.progress < 100 %}
+      <div class="task-card" style="border-left:5px solid #e53935" title="{{ task.description }}">
+        <h3>{{ task.title }}</h3>
+        <p>Deadline: {{ task.deadline|date:"M. d, Y" }}</p>
+
+        <p>Assigned to:
+          {% if task.assigned_to %}
+            {{ task.assigned_to.name }}
+          {% else %}
+            No one
+          {% endif %}
+        </p>
+
+        <p>Progress: {{ task.progress }}%</p>
+
+        <!-- Update Progress Form -->
+        <form method="post" style="display:inline-block;">
+          {% csrf_token %}
+          <input type="hidden" name="task_id" value="{{ task.id }}">
+          <input type="number" name="progress" value="{{ task.progress }}" min="0" max="100">
+          <button type="submit" name="update_task">Update</button>
+        </form>
+
+        <!-- Delete Task Form -->
+        <form method="post" style="display:inline-block;">
+          {% csrf_token %}
+          <input type="hidden" name="task_id" value="{{ task.id }}">
+          <button type="submit" name="delete_task">Delete</button>
+        </form>
+      </div>
+    {% endif %}
+  {% empty %}
+    <p>No tasks yet.</p>
+  {% endfor %}
+</div>
+
+<!-- Morale Badge Section -->
+<div class="morale-section">
+  <h3>Award Morale Badge</h3>
+  <form method="post">
+    {% csrf_token %}
+    
+    <label for="employee">Employee Name</label>
+    <select name="employee_id" id="employee" required>
+      <option value="">--Select Employee--</option>
+      {% for emp in employees %}
+        <option value="{{ emp.id }}">{{ emp.name }}</option>
+      {% endfor %}
+    </select>
+
+    <label for="badge_type">Badge Type</label>
+    <select name="badge_type" id="badge_type" required>
+      <option value="gold">Gold</option>
+      <option value="silver">Silver</option>
+      <option value="bronze">Bronze</option>
+    </select>
+
+    <button type="submit" name="award_badge">Award Badge</button>
+  </form>
+
+  <h4>Existing Badges</h4>
+  {% for badge in morale_badges %}
+    <p>{{ badge.employee.name }} → {{ badge.badge_type }} ({{ badge.awarded_at|date:"M. d, Y H:i" }})</p>
+  {% empty %}
+    <p>No badges awarded yet.</p>
+  {% endfor %}
+</div>
+
+{% endblock %}
